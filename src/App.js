@@ -1,23 +1,28 @@
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState } from "react";
+import db from "./nedb/items";
+import "./App.css";
+import { CreateItem } from "./Components/CreateItem";
+import { TODOItems } from "./Components/TODOItems";
 
 function App() {
+  const [items, setItems] = useState([]);
+
+  const getAllItems = () => {
+    db.find({}, (err, docs) => {
+      if (!err) {
+        setItems(docs);
+      }
+    });
+  };
+
+  useEffect(() => {
+    getAllItems();
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <CreateItem items={items} setItems={setItems} />
+      <TODOItems items={items} setItems={setItems} />
     </div>
   );
 }
